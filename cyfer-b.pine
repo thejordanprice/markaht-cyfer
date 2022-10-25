@@ -1,0 +1,36 @@
+//@version=5
+// d0od0o
+
+indicator(title='Market Cipher B', shorttitle='Market Cipher B')
+n1 = input(10, 'Channel Length')
+n2 = input(21, 'Average Length')
+obLevel1 = input(60, 'Over Bought Level 1')
+obLevel2 = input(53, 'Over Bought Level 2')
+osLevel1 = input(-60, 'Over Sold Level 1')
+osLevel2 = input(-53, 'Over Sold Level 2')
+
+ap = hlc3
+esa = ta.ema(ap, n1)
+d = ta.ema(math.abs(ap - esa), n1)
+ci = (ap - esa) / (0.015 * d)
+tci = ta.ema(ci, n2)
+
+wt1 = tci
+wt2 = ta.sma(wt1, 4)
+
+plot(0, color=color.new(color.gray, 0))
+plot(obLevel1, color=color.new(color.red, 0))
+plot(osLevel1, color=color.new(color.green, 0))
+plot(obLevel2, color=color.new(color.red, 0))
+plot(osLevel2, color=color.new(color.green, 0))
+
+plot(wt1, style=plot.style_area, color=color.new(#2196F3, 10), title='wt1')
+plot(wt2, style=plot.style_area, color=color.new(color.blue, 10), title='wt2')
+
+plot(wt1 - wt2, color=color.new(color.yellow, 0), style=plot.style_area)
+plot(ta.cross(wt1, wt2) ? wt2 : na, color=color.new(color.black, 0), style=plot.style_line, linewidth=5)
+
+
+plot(ta.cross(wt1, wt2) ? wt2 : na, color=wt2 - wt1 > 0 ? color.red : color.lime, style=plot.style_circles, linewidth=6)
+
+//barcolor(cross(wt1, wt2) ? (wt2 - wt1 > 0 ? black : yellow) : na)
